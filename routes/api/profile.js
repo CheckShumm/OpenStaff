@@ -6,6 +6,10 @@ const passport = require("passport");
 // Load Profile model
 const Profile = require("../../models/Profile");
 
+// Load profile validation
+
+const validateProfileInput = require("../../validation/profile");
+
 // Load User model
 const User = require("../../models/User");
 
@@ -42,6 +46,15 @@ router.post(
 	"/",
 	passport.authenticate("jwt", { session: false }),
 	(req, res) => {
+		const { errors, isValid } = validateProfileInput(req.body);
+
+		// check validation for profile fields
+		if (!isValid) {
+			// return errors
+			return res.status(400).json({ errors });
+		}
+
+		// get aLL fields
 		const profileFields = {};
 		profileFields.user = req.user.id;
 
@@ -69,9 +82,13 @@ router.post(
 			profileFields.status = req.body.status;
 		}
 
+		if (req.body.contactnumber) {
+			profileFields.contactnumber = req.body.contactnumber;
+		}
+
 		// Skills is an array
 		if (typeof req.body.skills !== "undefined") {
-			profileFields.status = req.body.skills.split(","); // split at comma
+			profileFields.skills = req.body.skills.split(","); // split at comma
 		}
 
 		Profile.findOne({ user: req.user.id }).then(profile => {
@@ -80,8 +97,10 @@ router.post(
 				Profile.findOneAndUpdate(
 					{ user: req.user.id },
 					{ $set: profileFields },
-					{ new: True }
-				).then(res.json(profile));
+					{ new: true }
+				)
+					.then(res.json(profile))
+					.catch(err => console.log(err));
 			} else {
 				// Create profile
 
@@ -95,28 +114,8 @@ router.post(
 					// save profile
 					new Profile(profileFields).save().then(profile => res.json(profile));
 				});
-				ile;
 			}
 		});
-
-		// // experiences
-		// profileFields.experiences = {};
-		//
-		// if (req.body.title) {
-		// 	profileFields.experiences.title = req.body.title;
-		// }
-		//
-		// if (req.body.company) {
-		// 	profileFields.experiences.company = req.body.company;
-		// }
-		//
-		// if (req.body.location) {
-		// 	profileFields.experiences.location = req.body.location;
-		// }
-		//
-		// if (req.body.bio) {
-		//   profileFields.experiences.bio = req.body.bio;
-		// }
 	}
 );
 

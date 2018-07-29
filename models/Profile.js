@@ -92,10 +92,10 @@ const ProfileSchema = new Schema({
 			}
 		}
 	],
-	preferences: {
-		type: [String],
-		required: true
-	},
+	// preferences: {
+	// 	type: [String],
+	// 	required: true
+	// },
 	contactnumber: {
 		type: String,
 		required: true
