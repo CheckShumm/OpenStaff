@@ -45,28 +45,6 @@ router.get(
 	}
 );
 
-// @route   Get api/profile
-// @desc    current user profile
-// @access  Private
-router.get(
-	"/",
-	passport.authenticate("jwt", { session: false }),
-	(req, res) => {
-		const errors = {};
-		Profile.findOne({ user: req.user.id })
-			.populate("user", ["name", "avatar"])
-			.then(profile => {
-				if (!profile) {
-					errors.profile = "This user does not have a profile";
-					return res.status(404).json(errors);
-				} else {
-					res.json(profile);
-				}
-			})
-			.catch(err => res.status(404).json(err));
-	}
-);
-
 // @route   GET api/profile/all
 // @desc    get all profiles
 // @access  Public
