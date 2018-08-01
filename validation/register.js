@@ -20,20 +20,15 @@ module.exports = function validateRegisterInput(data) {
 		errors.name = "Name field is empty";
 	}
 
-	// test for empty email
-	if (validator.isEmpty(data.email)) {
-		errors.email = "Email field is empty";
-	}
-
 	// test for valid email
 	if (!validator.isEmail(data.email)) {
 		console.log(data.email);
 		errors.email = "Email is invalid";
 	}
 
-	// test for empty password
-	if (validator.isEmpty(data.password)) {
-		errors.password = "Password field is empty";
+	// test for empty email
+	if (validator.isEmpty(data.email)) {
+		errors.email = "Email field is empty";
 	}
 
 	// test for password length
@@ -41,14 +36,19 @@ module.exports = function validateRegisterInput(data) {
 		errors.password = "Password must be at least 6 characters";
 	}
 
-	// test for empty password2
-	if (validator.isEmpty(data.password2)) {
-		errors.password2 = "Password verification field is empty";
+	// test for empty password
+	if (validator.isEmpty(data.password)) {
+		errors.password = "Password field is empty";
 	}
 
 	// test for password matching
 	if (!validator.equals(data.password, data.password2)) {
 		errors.password2 = "Passwords do not match";
+	}
+
+	// test for empty password2
+	if (validator.isEmpty(data.password2)) {
+		errors.password2 = "Password verification field is empty";
 	}
 
 	return {
